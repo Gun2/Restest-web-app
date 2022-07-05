@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, {css} from 'styled-components';
+import { NavLink } from 'react-router-dom';
 MenuItem.propTypes = {
     
 };
@@ -19,18 +20,25 @@ const Box = styled.div`
     }
     cursor : pointer;
 `
+const navLinkStyle = ({isActive, theme}) => ({
+    textDecoration: 'none',
+    backgroundColor: isActive ? '#fff' : undefined,
+})
 
-function MenuItem({children, text, textHide}) {
+
+function MenuItem({children, text, textHide, to, theme}) {
     return (
-        <Box>
-            <div>
-            {children}
-            </div>
-            <div>
-            {!textHide && text}
-            </div>
-            
-        </Box>
+        <NavLink style={navLinkStyle} theme={theme} to={to}>
+            <Box>
+                <div>
+                {children}
+                </div>
+                <div>
+                {!textHide && text}
+                </div>
+            </Box>
+
+        </NavLink>
     );
 }
 

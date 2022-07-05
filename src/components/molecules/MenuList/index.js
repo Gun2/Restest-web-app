@@ -10,16 +10,16 @@ const Box = styled.div`
 function MenuList({textHide}) {
     return (
         <Box>
-            <MenuItem text={"대시보드"} textHide={textHide}>
+            <MenuItem text={"대시보드"} textHide={textHide} to={"dashboard"}>
                 <MdOutlineMonitor />
             </MenuItem>
-            <MenuItem text={"업무 관리"} textHide={textHide}>
+            <MenuItem text={"업무 관리"} textHide={textHide} to={"job"}>
                 <MdWork />
             </MenuItem>
-            <MenuItem text={"스케줄러"} textHide={textHide}>
+            <MenuItem text={"스케줄러"} textHide={textHide} to={"scheduler"}>
                 <MdHistory />
             </MenuItem>
-            <MenuItem text={"실시간 측정"} textHide={textHide}>
+            <MenuItem text={"실시간 측정"} textHide={textHide} to={"realtime"}>
                 <MdOutlineLocalFireDepartment />
             </MenuItem>
         </Box>
