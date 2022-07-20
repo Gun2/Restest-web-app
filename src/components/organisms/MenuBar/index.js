@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
 import MenuList from '../../molecules/MenuList';
 import MenuTop from '../../molecules/MenuTop';
