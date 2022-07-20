@@ -5,18 +5,18 @@ const Box = styled.div`
 
 `
 
-const Text = styled.text`
+const Text = styled.div`
     font-size : ${({fontSize}) => fontSize || "20px"};
     font-weight : bold;
-    color : ${({theme}) => theme.palette.background};
+    color : ${({theme, color}) => (color || theme.palette.background)};
 `;
 
 
-function Title({text, fontSize}) {
+function Title({text, fontSize, children, color}) {
     return (
         <Box>
-            <Text fontSize={fontSize}>
-                {text}
+            <Text fontSize={fontSize} color={color}>
+                {children || text}
             </Text>
         </Box>
     );
