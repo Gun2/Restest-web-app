@@ -3,7 +3,11 @@ import LayoutTemplate from '../../templates/LayoutTemplate';
 import MenuBar from '../../organisms/MenuBar';
 import DashBoardPage from '../DashBoardPage';
 import styled from 'styled-components';
-import {Route, Routes, Switch} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
+import Test from '../../../Test';
+import JobTemplate from "../../templates/JobTemplate";
+import JobPage from "../JobPage";
+import SchedulePage from "../SchedulePage";
 
 const Box = styled.div`
 `;
@@ -15,9 +19,12 @@ function LayoutPage(props) {
             menu={<MenuBar/>} 
             content={
                 <Routes>
-                    <Route path='/dashboard' element={<DashBoardPage/>} />
-                    <Route path='/job' element={<p>222222</p>} />
-                    <Route path='/schedule' element={<p>333333</p>} />
+                    {['/dashboard', '/'].map( path => (
+                        <Route path={path} element={<DashBoardPage/>} />
+                    ))}
+                    <Route path='/job' element={<JobPage/>} />
+                    <Route path='/scheduler' element={<SchedulePage />} />
+                    <Route path='/test' element={<Test />} />
                 </Routes>
             }/>
         </Box>
