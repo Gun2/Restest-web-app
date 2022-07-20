@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import styled, {css} from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import styled from 'styled-components';
+import {NavLink} from 'react-router-dom';
+
 MenuItem.propTypes = {
     
 };
