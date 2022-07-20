@@ -10,7 +10,6 @@ const Button = style.button`
     border-width : 0px;
     ${({theme, form}) => theme.map.button(form)};
     cursor:pointer;
-    s
 `;
 
 export default Button;
