@@ -30,7 +30,7 @@ const colorAdd = (() => {
 
     return ((color, plus) => {
         color = color.replace("#", "");
-        if(color.length == 3) {
+        if(color.length === 3) {
             color = color + color;
         }
         var r = hexToDec(color.slice(0,2));
@@ -48,6 +48,8 @@ const colorAdd = (() => {
 const palette = {
     background : "#212121",
     panel  : "#3C3C3C",
+    primary : "#ABABAB",
+    secondary : "#8C8C8C",
     text : {
         primary : "#ABABAB",
         secondary : "#8C8C8C",
@@ -57,10 +59,11 @@ const palette = {
     button : {
         primary : "#337ab7",
         danger : "#d9534f",
-        warning : "#f0ad4e",
+        warning : "#eb9c2d",
         info : "#5bc0de",
         success : "#5cb85c",
         default : "#ffffff",
+        panel : "#3C3C3C",
     },
     status : {
         success : "#2fcc71",
@@ -68,6 +71,12 @@ const palette = {
         default : "#ABABAB"
     }
 };
+
+const style = {
+    readonly : css`
+        pointer-events:none;
+    `
+}
 
 const flex = {
     startCenter : css`
@@ -113,6 +122,17 @@ const map = {
             opacity: 0.7;
             background-color : ${colorAdd(palette.button[theme], -150)}
         }
+    `,
+    tab : (theme) => `
+        background-color : ${palette.button[theme]};
+        &:hover{
+            background-color : ${colorAdd(palette.button[theme], 50)}
+        }
+        &:disabled {
+            cursor: default;
+            opacity: 0.7;
+            background-color : ${colorAdd(palette.button[theme], -150)}
+        }
     `
 }
 
@@ -120,5 +140,7 @@ const theme = {
     palette,
     map,
     flex,
+    colorAdd,
+    style
 };
 export default theme;
