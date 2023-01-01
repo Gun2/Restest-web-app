@@ -68,13 +68,17 @@ const palette = {
     status : {
         success : "#2fcc71",
         failure : "#e74c3c",
-        default : "#ABABAB"
-    }
+        default : "#ABABAB",
+        warning : "#eb9c2d",
+    },
+    disabled: "#797979",
+    validation: "#d9534f"
 };
 
 const style = {
     readonly : css`
         pointer-events:none;
+        background-color : ${palette.disabled}; 
     `
 }
 
@@ -104,6 +108,18 @@ const flex = {
     align-items: center;
     `,
 }
+
+const backgroundCover = `
+    background-color : #00000055;
+    width:100%;
+    height:100%;
+    position:absolute;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+`
 
 const map = {
     button : (theme) => `
@@ -141,6 +157,7 @@ const theme = {
     map,
     flex,
     colorAdd,
-    style
+    style,
+    backgroundCover
 };
 export default theme;
