@@ -1,8 +1,8 @@
 import React, {useCallback, useState} from 'react';
 import styled from "styled-components";
 import Button from "../../atoms/Button";
-import JobContain from "../../molecules/JobContain";
-import ScheduleContain from "../../molecules/ScheduleContain";
+import JobContent from "../../molecules/JobContent";
+import ScheduleContent from "../../molecules/ScheduleContent";
 
 const Box = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const CreateBox = styled.div`
 `
 
 
-function ScheduleTop({onSaveCallback}) {
+function ScheduleTop() {
 
     const [viewCreator, setViewCreator] = useState(false);
     const onAdd = useCallback(() => {
@@ -46,16 +46,14 @@ function ScheduleTop({onSaveCallback}) {
             <CreateBox>
                 {
                     viewCreator &&
-                    <ScheduleContain
+                    <ScheduleContent
                         showSaveBtn
                         showCancelBtn
                         onSaveCallback={() => {
                             setViewCreator(false);
-                            onSaveCallback();
                         }}
                         onCancelCallback={() => {
                             setViewCreator(false);
-
                         }}
                     />
                 }

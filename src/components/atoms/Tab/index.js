@@ -15,7 +15,7 @@ const Box = styled.div`
 function Tab({children, onTab, item, active}) {
     const onClick = useCallback(() => {
         onTab(item);
-    }, item);
+    }, [item]);
     return (
         <Box onClick={onClick} active={active}>
             {children}

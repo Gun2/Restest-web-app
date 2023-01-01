@@ -5,9 +5,11 @@ import LayoutPage from './components/pages/LayoutPage';
 import {BrowserRouter} from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import React, {useCallback, useMemo, useRef} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {failureUpdate, successUpdate, userUpdate} from "./modules/sysInfo";
 import {schedulerUpdate, schedulerInsert, schedulerInit, schedulerDelete} from "./modules/scheduler";
+import {jobChangeDataSpreaderThunk} from "./modules/job";
+import {scheduleChangeDataSpreaderThunk} from "./modules/schedule";
 
 const Box = styled.div`
   background-color : ${({theme}) => theme.palette.background};
@@ -19,45 +21,22 @@ export const SocketContext = React.createContext(null);
 function App() {
     const socketRef = useRef();
     const dispatch = useDispatch();
-    const topicAction = useMemo(() => ({
-        '/sys-info/user': r => {
-            dispatch(userUpdate(r));
-        },
-        '/sys-info/success': r => {
-            dispatch(successUpdate(r));
-        },
-        '/sys-info/failure': r => {
-            dispatch(failureUpdate(r));
-        },
-        '/scheduler/update' : r => {
-            dispatch(schedulerUpdate(r));
-        },
-        '/scheduler/init' : r => {
-            dispatch(schedulerInit(r));
-        },
-        '/scheduler/insert' : r => {
-            dispatch(schedulerInsert(r));
-        },
-        '/scheduler/delete' : r => {
-            dispatch(schedulerDelete(r));
-        },
-
-    }), []);
+    const topic = useSelector(store => store.topic);
+    const topicAction = useMemo(() => (topic), [topic]);
     return (
         <BrowserRouter>
             <SockJsClient
                 ref={socketRef}
                 url='http://localhost:8081/ws'
-                getRetryInterval={1}
+
+                //getRetryInterval={1}
                 topics={Object.keys(topicAction)}
                 onMessage={(response, topic) => {
                     //console.log(`response : ${response}, topic : ${topic}`);
-                    topicAction[topic](response);
+                    dispatch(topicAction[topic](response));
                 }}
                 onConnect={(...args) => {
-                    var cnt = 0;
                     const init = () => {
-                        //console.log(`socket init try....${++cnt}`);
                         if (socketRef.current.state.connected) {
                             socketRef.current.sendMessage('/app/sys-info/user/init', 'search', {});
                             socketRef.current.sendMessage('/app/sys-info/success/init', 'search', {});
@@ -73,6 +52,7 @@ function App() {
                     console.log('disconnect');
                     console.log(args);
                 }}
+                autoReconnect
             />
             <ThemeProvider theme={theme}>
                 <SocketContext.Provider value={socketRef}>

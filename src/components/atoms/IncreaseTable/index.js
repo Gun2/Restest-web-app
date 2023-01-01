@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from "styled-components";
 
 const Box = styled.div`
@@ -37,9 +37,24 @@ const TdCheckBox = styled.input`
 function trIncreaseCheck(data, cols) {
     if (data.length == 0) return true;
     var lastData = data[data.length - 1];
-    var trIncrease = cols.map(col => col.key).some(key => lastData[key]);
+    var trIncrease = cols.some(({key, increaseIgnore}) => !increaseIgnore && lastData[key]);
     return trIncrease;
+}
 
+/**
+ * 공백 tr을 추가하여 반환
+ * @param data tr data
+ * @param cols col 정보
+ * @return {*[]}
+ */
+function addNextEmptyTr(data, cols){
+    return [
+        ...data,
+        cols.reduce((pre, col) => {
+            pre[col.key] = col.default ? col.default : "";
+            return pre;
+        }, {})
+    ]
 }
 
 function IncreaseTable({
@@ -49,58 +64,64 @@ function IncreaseTable({
                            readonly
                        }) {
 
-    if (trIncreaseCheck(data, cols)) {
-        onChange([
-            ...data,
-            cols.reduce((pre, col) => {
-                pre[col.key] = "";
-                return pre;
-            }, {})
-        ]);
-    }
+    useEffect(() => {
+        if (trIncreaseCheck(data, cols)) {
+            onChange(addNextEmptyTr(data, cols));
+        }
+    }, [cols, data]);
+
+
 
     const onInputChange = useCallback(({target}, index) => {
         var {name, value} = target;
         var keys = cols.map(({key}) => key);
-        onChange(data.map((d, i) =>
+        var emptyRemovedData = data.map((d, i) =>
             i == index ? {
                 ...d,
                 [name]: value
             } : d
-        ).filter(d => keys.some(key => d[key])));
+        ).filter(d => keys.some(key => d[key]));
+        if (trIncreaseCheck(emptyRemovedData, cols)) {
+            emptyRemovedData = addNextEmptyTr(emptyRemovedData, cols)
+        }
+        onChange(emptyRemovedData);
     }, [cols, data]);
 
     const onCheckChange = useCallback(({target}, index) => {
         var {name, checked} = target;
         var keys = cols.map(({key}) => key);
-        onChange(data.map((d, i) =>
+        var emptyRemovedData = data.map((d, i) =>
             i == index ? {
                 ...d,
                 [name]: checked
             } : d
-        ).filter(d => keys.some(key => d[key])));
+        ).filter(d => keys.some(key => d[key]));
+        if (trIncreaseCheck(emptyRemovedData, cols)) {
+            emptyRemovedData = addNextEmptyTr(emptyRemovedData, cols)
+        }
+        onChange(emptyRemovedData);
     }, [cols, data]);
 
     return (
         <Box>
             <Table>
                 <tbody>
-                <Tr>
-                    {cols.map(({name}) => (
-                        <Th>{name}</Th>
+                <Tr key={0}>
+                    {cols.map(({key, name}) => (
+                        <Th key={key}>{name}</Th>
                     ))}
                 </Tr>
                 {data.map((d, i) => (
-                    <Tr>
+                    <Tr key={i}>
                         {cols.map(({type, key}) => (
-                            <Td>
+                            <Td key={key+i}>
                                 {(() => {
                                     switch (type) {
                                         case "input":
                                             return (
                                                 <TdInput
                                                     name={key}
-                                                    value={d[key]}
+                                                    value={d[key] ?? ''}
                                                     onChange={(e) => onInputChange(e, i)}
                                                     readonly={readonly}
                                                 />

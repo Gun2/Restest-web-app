@@ -6,6 +6,10 @@ import Button from "../../atoms/Button";
 import IncreaseTable from "../../atoms/IncreaseTable";
 import TabBar from "../TabBar";
 import axios from "axios";
+import ValidationMessage from "../../atoms/ValidationMessage";
+import {jobCreateThunk, jobDeleteThunk, jobReadAllThunk, jobUpdateThunk} from "../../../modules/job";
+import {useDispatch, useSelector} from "react-redux";
+import store from "../../../store";
 
 const Box = styled.div`
     display: flex;
@@ -44,17 +48,17 @@ const jobReducer = (state, {type, name, value}) => {
         case "HEADERS/CHANGE":
             return {
                 ...state,
-                jobHeaderList: [...value]
+                ["jobHeaderList"]: [...value]
             }
         case "BODY/CHANGE":
             return {
                 ...state,
-                jobBodyList: [...value]
+                ["jobBodyList"]: [...value]
             }
     }
 }
 
-function JobContain({
+function JobContent({
                         data = initData,
                         onSaveCallback = () => {
                         },
@@ -70,29 +74,27 @@ function JobContain({
                         showTestBtn,
                         readonly
                     }) {
+    const successCallback = () => {
+        onSaveCallback();
+        //dispatch(jobReadAllThunk({}));
+    }
     const [jobData, jobDispatch] = useReducer(jobReducer, data);
-
+    const validationGroup = `jobValidation-${jobData.id}`;
+    const dispatch = useDispatch();
     const onSave = useCallback(() => {
         if (jobData.id) {
-            axios.put('/api/v1/jobs', jobData)
-                .then(r => {
-                    console.log(r)
-                    onSaveCallback();
-                })
-                .catch(e => {
-                    console.error(e)
-                });
+            dispatch(jobUpdateThunk({
+                param : jobData,
+                validationGroup : validationGroup,
+                successCallback : () => {successCallback()},
+            }));
         } else {
-            axios.post('/api/v1/jobs', jobData)
-                .then(r => {
-                    console.log(r)
-                    onSaveCallback();
-                })
-                .catch(e => {
-                    console.error(e)
-                });
+            dispatch(jobCreateThunk({
+                param : jobData,
+                validationGroup : validationGroup,
+                successCallback : () => {successCallback()}
+            }));
         }
-
     }, [jobData]);
 
     const onCancel = useCallback(() => {
@@ -105,52 +107,57 @@ function JobContain({
     }, [jobData]);
 
     const onDelete = useCallback(() => {
-        axios.delete(`/api/v1/jobs/${jobData.id}`).then(
-            () => {
-                onDeleteCallback()
-            }
-        )
+        dispatch(jobDeleteThunk({
+            param: jobData.id,
+            validationGroup : validationGroup,
+            successCallback : () => {onDeleteCallback()}
+        }));
     }, [jobData])
     return (
         <Box>
             {
                 !readonly &&
-                <InputText onChange={
-                    (value) => onChange({
-                        type: "CHANGE",
-                        name: "title",
-                        value: value
-                    })}
-                           value={jobData.title}
-                           widthFull placeholder={"업무 제목을 입력하세요."}
-                />
+                <ValidationMessage field={"title"} validationGroup={validationGroup}>
+                    <InputText onChange={
+                        (value) => onChange({
+                            type: "CHANGE",
+                            name: "title",
+                            value: value
+                        })}
+                               value={jobData.title}
+                               widthFull placeholder={"업무 제목을 입력하세요."}
+                    />
+                </ValidationMessage>
             }
             <UrlContain>
-                <Select value={jobData.method}
-                        onChange={
-                            (value) => onChange({
-                                type: "CHANGE",
-                                name: "method",
-                                value: value
-                            })
-                        }
-                        readonly={readonly}
-                >
-                    <option value={"GET"}>GET</option>
-                    <option value={"POST"}>POST</option>
-                    <option value={"PUT"}>PUT</option>
-                    <option value={"DELETE"}>DELETE</option>
-                </Select>
-                <InputText onChange={
-                    (value) => onChange({
-                        type: "CHANGE",
-                        name: "url",
-                        value: value
-                    })}
-                           value={jobData.url}
-                           placeholder={"URL을 입력하세요"}
-                           readonly={readonly}
-                />
+                <ValidationMessage field={"method"} validationGroup={validationGroup}>
+                    <Select value={jobData.method}
+                            onChange={
+                                (value) => onChange({
+                                    type: "CHANGE",
+                                    name: "method",
+                                    value: value
+                                })
+                            }
+                            readonly={readonly}>
+                        <option value={"GET"}>GET</option>
+                        <option value={"POST"}>POST</option>
+                        <option value={"PUT"}>PUT</option>
+                        <option value={"DELETE"}>DELETE</option>
+                    </Select>
+                </ValidationMessage>
+                <ValidationMessage style={{flex:"1"}} field={"url"} validationGroup={validationGroup}>
+                    <InputText onChange={
+                        (value) => onChange({
+                            type: "CHANGE",
+                            name: "url",
+                            value: value
+                        })}
+                               value={jobData.url}
+                               placeholder={"URL을 입력하세요"}
+                               readonly={readonly}
+                    />
+                </ValidationMessage>
                 {showTestBtn && <Button form="primary">테스트</Button>}
             </UrlContain>
             <TabBar tabData={[
@@ -161,7 +168,9 @@ function JobContain({
                             {
                                 key: "usable",
                                 name: "",
-                                type: "checkbox"
+                                type: "checkbox",
+                                increaseIgnore : true,
+                                //default: true,
                             }, {
                                 key: "keyName",
                                 name: "key",
@@ -191,7 +200,8 @@ function JobContain({
                             {
                                 key: "usable",
                                 name: "",
-                                type: "checkbox"
+                                type: "checkbox",
+                                increaseIgnore : true,
                             }, {
                                 key: "body",
                                 name: "Body",
@@ -232,4 +242,4 @@ function JobContain({
     );
 }
 
-export default JobContain;
+export default JobContent;

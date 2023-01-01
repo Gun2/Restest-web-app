@@ -19,7 +19,7 @@ function MenuList({textHide}) {
             <MenuItem text={"스케줄러"} textHide={textHide} to={"scheduler"}>
                 <MdHistory />
             </MenuItem>
-            <MenuItem text={"실시간 측정"} textHide={textHide} to={"realtime"}>
+            <MenuItem text={"성능 측정"} textHide={textHide} to={"performance"}>
                 <MdOutlineLocalFireDepartment />
             </MenuItem>
         </Box>

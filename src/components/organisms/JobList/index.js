@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useReducer, useState} from 'react';
 import styled from "styled-components";
 import axios from "axios";
-import JobRow from "../../molecules/OpenRow";
-import JobContain from "../../molecules/JobContain";
+import JobRow from "../../molecules/JobRow";
+import JobContent from "../../molecules/JobContent";
 
 const Box = styled.div`
 `
@@ -19,12 +19,11 @@ function JobList({
                      getData,
                      onCheckCallback = () => {
                      },
-                     checkedIdList = [],
+                     checkedIdSet: checkedIdSet = new Set(),
                      hideCheckBox,
                      readonly
                  },
 ) {
-    const [checkSet, setCheckSet] = useState(new Set([...checkedIdList]));
 
     return (
         <Box>
@@ -34,7 +33,7 @@ function JobList({
                         return (
                             <JobRow
                                 hideCheckBox={hideCheckBox}
-                                checkSet={checkSet}
+                                checkSet={checkedIdSet}
                                 title={d.title}
                                 data={d}
                                 onSaveCallback={() => {
@@ -47,14 +46,13 @@ function JobList({
                                 _key={d.id}
                                 onCheckCallback={(e, key) => {
                                     const checked = e.target.checked;
+                                    var nextSet = new Set([...checkedIdSet]);
                                     if (checked) {
-                                        checkSet.add(key);
+                                        nextSet.add(key);
                                     } else {
-                                        checkSet.delete(key);
+                                        nextSet.delete(key);
                                     }
-                                    setCheckSet(checkSet)
-
-                                    onCheckCallback(checkSet);
+                                    onCheckCallback(nextSet);
                                 }}
                                 readonly={readonly}
                             />

@@ -1,46 +1,20 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import styled, {css} from "styled-components";
 import CheckBox from "../../atoms/CheckBox";
 import Title from "../../atoms/Title";
 import DirectionToggle from "../../atoms/DirectionToggle";
-import JobContain from "../JobContain";
-import ScheduleContain from "../ScheduleContain";
+import JobContent from "../JobContent";
+import ScheduleContent from "../ScheduleContent";
 import {Switch} from "@mui/material";
 import axios from "axios";
 import {MdCheckCircleOutline} from "react-icons/md";
 import StatusLabel from "../../atoms/StatusLabel";
-
-
-const Box = styled.div`
-    background-color : ${({theme}) => theme.palette.panel};
-    display:flex;
-    flex-direction : column;
-    padding : 5px;
-    gap:5px;
-    ${
-    ({theme, hasUpdate}) => hasUpdate && css`
-        background-color : ${theme.colorAdd(theme.palette.panel, 50)}
-    `
-}   
-`;
-
-const Row = styled.div`
-    display: flex;
-`
-
-const RowHead = styled.div`
-    flex: 1;
-    ${({theme}) => theme.flex.startCenter};
-`
-
-const RowTail = styled.div`
-    ${({theme}) => theme.flex.startCenter};
-`
-
-const HiddenRow = styled.div`
-
-`
-
+import theme from "../../../theme";
+import OpenRow from "../OpenRow";
+import {failureLogAddAction, failureLogDialogThunk, failureLogReadAllThunk} from "../../../modules/schedulerFailureLog";
+import {useDispatch} from "react-redux";
+import {addTopicAction} from "../../../modules/topic";
+import {successLogAddAction, successLogDialogThunk, successLogReadAllThunk} from "../../../modules/schedulerSuccessLog";
 
 const initData = {
     title: "",
@@ -48,22 +22,6 @@ const initData = {
     jobList: [],
 }
 
-const reducer = (state, {type, name, value}) => {
-    switch (type) {
-        case "INIT":
-            return {...initData};
-        case "CHANGE":
-            return {
-                ...state,
-                [name]: value
-            }
-        case "JOBS/CHANGE":
-            return {
-                ...state,
-                jobIdList: [...value]
-            }
-    }
-}
 
 function ScheduleRow({
                          title,
@@ -71,42 +29,42 @@ function ScheduleRow({
                          schedulerStateInfo,
                          onSaveCallback,
                          onDeleteCallback,
-                         onCheckCallback,
-                         _key
+                         _key,
                      }) {
-    const [hasUpdate, setHasUpdate] = useState(false);
-    const [viewBody, setViewBody] = useState(false);
-    const onToggle = useCallback((flag) => {
-        setViewBody(flag != 1);
-    }, [viewBody]);
-
+    const dispatch = useDispatch();
     return (
-        <Box hasUpdate={hasUpdate}>
-            <Row>
-                <RowHead>
-                    <Title color={"#e4e4e4"}>
-                        {title}
-                    </Title>
-
-                </RowHead>
-                <RowTail>
+        <OpenRow
+            head={
+                <Title color={"#e4e4e4"}>
+                    {title}
+                </Title>
+            }
+            tail={
+                <>
                     {
                         schedulerStateInfo &&
                         <>
+                            <Title fontSize={10} color={theme.palette.text.default}>{schedulerStateInfo.lastTime}ms</Title>
                             <StatusLabel
                                 status={"success"}
                                 label={schedulerStateInfo.success}
+                                onClick={() => {
+                                    dispatch(successLogDialogThunk({id:data.id}));
+                                }}
                             />
                             <StatusLabel
                                 status={"failure"}
                                 label={schedulerStateInfo.failure}
+                                onClick={() => {
+                                    dispatch(failureLogDialogThunk({id:data.id}));
+                                }}
                             />
                         </>
 
 
                     }
                     <Switch
-                        checked={schedulerStateInfo}
+                        checked={schedulerStateInfo != null}
                         color={"secondary"}
                         onChange={({target}) => {
                             axios.put('/api/v1/schedules/run', {
@@ -120,31 +78,25 @@ function ScheduleRow({
                         }}
 
                     />
-                    <DirectionToggle onToggle={onToggle} degree={90}/>
-                </RowTail>
-            </Row>
-            {
-                viewBody && (
-                    <HiddenRow>
-                        <ScheduleContain
-                            data={data}
-                            showDeleteBtn
-                            showSaveBtn
-                            onSaveCallback={() => {
-                                //onToggle();
-                                onSaveCallback();
-                            }}
-                            onDeleteCallback={() => {
-                                //onToggle();
-                                onDeleteCallback();
-                            }}
+                </>
 
-                        />
-                    </HiddenRow>
-                )
             }
-
-        </Box>
+            content={
+                <ScheduleContent
+                    data={data}
+                    showDeleteBtn
+                    showSaveBtn
+                    onSaveCallback={() => {
+                        //onToggle();
+                        onSaveCallback();
+                    }}
+                    onDeleteCallback={() => {
+                        //onToggle();
+                        onDeleteCallback();
+                    }}
+                />
+            }
+        />
     );
 }
 

@@ -10,10 +10,10 @@ const Box = styled.div`
 
 
 function MenuBar(props) {
-    const [menuTextHide, setMenuTextHide] = useState(false);
+    const [menuTextHide, setMenuTextHide] = useState(true);
     const onToggle = useCallback((id) => {
         setMenuTextHide(
-            (id === 0 ? true : false)
+            (id === 1 ? true : false)
         );
     }, []);
     return (

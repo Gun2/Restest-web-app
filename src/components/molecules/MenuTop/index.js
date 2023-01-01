@@ -9,7 +9,7 @@ const Box = styled.div`
 function MenuTop({onToggle}) {
     return (
         <Box>
-            <DirectionToggle degree={180} onToggle={onToggle}/>
+            <DirectionToggle degree={0} onToggle={onToggle}/>
         </Box>
     );
 }

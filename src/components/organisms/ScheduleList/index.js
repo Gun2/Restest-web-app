@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import JobRow from "../../molecules/OpenRow";
+import JobRow from "../../molecules/JobRow";
 import ScheduleRow from "../../molecules/ScheduleRow";
 import {useSelector} from "react-redux";
 
@@ -17,8 +17,6 @@ const List = styled.div`
 function ScheduleList({
                           data,
                           getData,
-                          onCheckCallback = () => {
-                          }
                       }) {
     const schedulerStateInfoList = useSelector(state => state.scheduler);
 

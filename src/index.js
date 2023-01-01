@@ -6,15 +6,23 @@ import reportWebVitals from './reportWebVitals';
 import {createStore} from "redux";
 import rootReducer from "./modules";
 import {Provider} from "react-redux";
+import store from "./store";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "./dev";
 
-const store = createStore(rootReducer);
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const htmlTitle = document.querySelector("title");
+htmlTitle.innerText = 'RESTEST';
 root.render(
-  <React.StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <DevSupport ComponentPreviews={ComponentPreviews}
+                        useInitialHook={useInitial}
+            >
+                <App/>
+            </DevSupport>
+        </Provider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

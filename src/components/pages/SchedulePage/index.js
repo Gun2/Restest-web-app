@@ -1,34 +1,25 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import ScheduleTemplate from "../../templates/ScheduleTemplate";
-import axios from "axios";
 import ScheduleTop from "../../organisms/ScheduleTop";
 import ScheduleList from "../../organisms/ScheduleList";
-
-const getScheduleList = () => {
-    return axios.get('/api/v1/schedules');
-}
+import {useDispatch, useSelector} from "react-redux";
+import {scheduleReadAllThunk} from "../../../modules/schedule";
+import {jobReadAllThunk} from "../../../modules/job";
 
 function SchedulePage(props) {
-    const [data, setData] = useState([]);
+    const data = useSelector(store => store.schedule);
+    const dispatch = useDispatch();
     const getData = () => {
-        getScheduleList().then(r => {
-            var response = r.data;
-            setData(response.data);
-        });
+        dispatch(scheduleReadAllThunk({}));
+        dispatch(jobReadAllThunk({}));
     }
     useEffect(() => {
         getData();
     }, []);
-    const onSaveCallback = () => {
-        getData();
-    }
-
     return (
         <ScheduleTemplate
             top={
-                <ScheduleTop
-                    onSaveCallback={onSaveCallback}
-                />
+                <ScheduleTop/>
             }
             list={
                 <ScheduleList

@@ -2,8 +2,9 @@ import React, {useCallback, useState, useReducer} from 'react';
 import styled, {css} from "styled-components";
 import DirectionToggle from "../../atoms/DirectionToggle";
 import Title from "../../atoms/Title";
-import JobContain from "../JobContain";
+import JobContent from "../JobContent";
 import CheckBox from "../../atoms/CheckBox";
+import Rect from "../../atoms/Rect";
 
 const Box = styled.div`
     background-color : ${({theme}) => theme.palette.panel};
@@ -20,86 +21,48 @@ const Box = styled.div`
 
 const Row = styled.div`
     display: flex;
+    padding: 0 10px;
 `
 
 const RowHead = styled.div`
     flex: 1;
+    gap:5px;
     ${({theme}) => theme.flex.startCenter};
 `
 
 const RowTail = styled.div`
-
+    ${({theme}) => theme.flex.startCenter};
 `
 
 const HiddenRow = styled.div`
 
 `
 
-function JobRow({
-                    title,
-                    data,
-                    onSaveCallback,
-                    onDeleteCallback,
-                    onCheckCallback,
-                    _key,
-                    checkSet,
-                    hideCheckBox,
-                    readonly
-                }) {
-    const [hasUpdate, setHasUpdate] = useState(false);
+function OpenRow({head, content, tail}) {
     const [viewBody, setViewBody] = useState(false);
     const onToggle = useCallback((flag) => {
         setViewBody(flag != 1);
     }, [viewBody]);
-
     return (
-        <Box hasUpdate={hasUpdate}>
+        <Box>
             <Row>
                 <RowHead>
-                    {
-                        !hideCheckBox &&
-                        <CheckBox
-                            onChange={(e) => {
-                                onCheckCallback(e, _key);
-                            }}
-                            checked={checkSet.has(_key)}
-
-                        />
-                    }
-                    {
-                        <Title color={"#e4e4e4"}>
-                            {title}
-                        </Title>
-                    }
-
+                    {head}
                 </RowHead>
                 <RowTail>
+                    {tail}
                     <DirectionToggle onToggle={onToggle} degree={90}/>
                 </RowTail>
             </Row>
             {
                 viewBody && (
                     <HiddenRow>
-                        <JobContain
-                            data={data}
-                            showDeleteBtn
-                            showSaveBtn
-                            onSaveCallback={() => {
-                                onToggle();
-                                onSaveCallback();
-                            }}
-                            onDeleteCallback={() => {
-                                onToggle();
-                                onDeleteCallback();
-                            }}
-                            readonly={readonly}
-                        />
+                        {content}
                     </HiddenRow>
                 )
             }
-
         </Box>
     );
 }
 
-export default JobRow;
+export default OpenRow;

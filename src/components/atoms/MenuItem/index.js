@@ -7,10 +7,15 @@ MenuItem.propTypes = {
 };
 
 const Box = styled.div`
+    .active &{
+        background-color : ${({theme}) => theme.palette.background} !important;
+        color : ${({theme}) => theme.palette.text.default};
+
+    }
     background-color : ${({theme}) => theme.palette.panel};
     color : ${({theme}) => theme.palette.text.primary};
     height : 40px;
-    ${({theme}) => theme.flex.startCenter};
+    ${({theme, textHide}) => textHide ? theme.flex.center : theme.flex.startCenter};
     padding : 5px;
     gap : 5px;
     font-size : 25px;
@@ -29,13 +34,14 @@ const navLinkStyle = ({isActive, theme}) => ({
 function MenuItem({children, text, textHide, to, theme}) {
     return (
         <NavLink style={navLinkStyle} theme={theme} to={to}>
-            <Box>
+            <Box textHide={textHide}>
                 <div>
                 {children}
                 </div>
-                <div>
-                {!textHide && text}
-                </div>
+                {
+                    !textHide && <div>{text}</div>
+                }
+
             </Box>
 
         </NavLink>

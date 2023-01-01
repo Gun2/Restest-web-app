@@ -1,7 +1,7 @@
 import React, {useCallback, useReducer, useState} from 'react';
 import Button from "../../atoms/Button";
 import styled from "styled-components";
-import JobContain from "../../molecules/JobContain";
+import JobContent from "../../molecules/JobContent";
 import axios from "axios";
 
 const Box = styled.div`
@@ -46,7 +46,7 @@ function JobTop({onSaveCallback}) {
             <CreateBox>
                 {
                     viewCreator &&
-                    <JobContain
+                    <JobContent
                         showSaveBtn
                         showCancelBtn
                         onSaveCallback={() => {

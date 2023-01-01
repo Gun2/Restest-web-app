@@ -6,13 +6,14 @@ const Box = styled.div`
     margin: 0 10px;
     ${({theme}) => theme.flex.startCenter};
     gap: 5px;
+    cursor: pointer;
 `
 const Label = styled.div`
     color: ${({theme}) => theme.palette.text.primary}
 `
-function StatusLabel({status = "success", label}) {
+function StatusLabel({status = "success", label, onClick}) {
     return (
-        <Box>
+        <Box onClick={onClick}>
             {
                 status == "success" &&
                 <MdCheckCircleOutline

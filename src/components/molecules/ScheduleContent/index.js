@@ -7,6 +7,9 @@ import IncreaseTable from "../../atoms/IncreaseTable";
 import TabBar from "../TabBar";
 import axios from "axios";
 import JobList from "../../organisms/JobList";
+import {useDispatch, useSelector} from "react-redux";
+import {scheduleCreateThunk, scheduleUpdateThunk} from "../../../modules/schedule";
+import ValidationMessage from "../../atoms/ValidationMessage";
 
 const Box = styled.div`
     display: flex;
@@ -57,7 +60,7 @@ const reducer = (state, {type, name, value}) => {
     }
 }
 
-function ScheduleContain({
+function ScheduleContent({
                             data = initData,
                              onSaveCallback = () => {
                              },
@@ -72,40 +75,25 @@ function ScheduleContain({
                              showCancelBtn,
                              showTestBtn,
                          }) {
-    const [jobData, setJobData] = useState([]);
-    const getData = () => {
-        getJobList().then(r => {
-            var response = r.data;
-            setJobData(response.data);
-        });
-    }
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const [scheduleData, dispatch] = useReducer(reducer, data);
-
+    const jobData = useSelector(store => store.job);
+    const [scheduleData, scheduleDispatch] = useReducer(reducer, data);
+    const dispatch = useDispatch();
+    const validationGroup = `scheduleValidation-${data.id}`;
     const onSave = useCallback(() => {
         if (scheduleData.id) {
-            axios.put('/api/v1/schedules', scheduleData)
-                .then(r => {
-                    console.log(r)
-                    onSaveCallback();
-                })
-                .catch(e => {
-                    console.error(e)
-                });
-        } else {
-            axios.post('/api/v1/schedules', scheduleData)
-                .then(r => {
-                    console.log(r)
-                    onSaveCallback();
-                })
-                .catch(e => {
-                    console.error(e)
-                });
-        }
+            dispatch(scheduleUpdateThunk({
+                param : scheduleData,
+                validationGroup : validationGroup,
+                successCallback : onSaveCallback,
+            }));
 
+        } else {
+            dispatch(scheduleCreateThunk({
+                param : scheduleData,
+                validationGroup : validationGroup,
+                successCallback : onSaveCallback,
+            }));
+        }
     }, [scheduleData]);
 
     const onCancel = useCallback(() => {
@@ -113,8 +101,7 @@ function ScheduleContain({
     });
 
     const onChange = useCallback((action) => {
-        dispatch(action);
-        onChangeCallback(action);
+        scheduleDispatch(action);
     }, [scheduleData]);
 
     const onDelete = useCallback(() => {
@@ -127,32 +114,35 @@ function ScheduleContain({
     return (
         <Box>
             <ColContain>
-                <InputText onChange={
-                    (value) => onChange({
-                        type: "CHANGE",
-                        name: "title",
-                        value: value
-                    })}
-                           value={scheduleData.title}
-                           widthFull
-                           placeholder={"스케줄 제목을 입력하세요."}
-                />
-                <InputText onChange={
-                    (value) => onChange({
-                        type: "CHANGE",
-                        name: "delay",
-                        value: value
-                    })}
-                           value={scheduleData.delay}
-                           placeholder={"동작 주기를 입력하세요, (ms)"}/>
+                <ValidationMessage field={"title"} validationGroup={validationGroup}>
+                    <InputText onChange={
+                        (value) => onChange({
+                            type: "CHANGE",
+                            name: "title",
+                            value: value
+                        })}
+                               value={scheduleData.title}
+                               widthFull
+                               placeholder={"스케줄 제목을 입력하세요."}
+                    />
+                </ValidationMessage>
+                <ValidationMessage field={"delay"} validationGroup={validationGroup}>
+                    <InputText onChange={
+                        (value) => onChange({
+                            type: "CHANGE",
+                            name: "delay",
+                            value: value
+                        })}
+                               value={scheduleData.delay}
+                               placeholder={"동작 주기를 입력하세요, (ms)"}/>
+                </ValidationMessage>
             </ColContain>
             <JobBox>
                 <JobList
                     data={jobData}
-                    checkedIdList={scheduleData.jobIdList}
+                    checkedIdSet={new Set(scheduleData.jobIdList)}
                     onCheckCallback={(set) => {
-                        console.log(set);
-                        dispatch({
+                        scheduleDispatch({
                             type:"JOBS/CHANGE",
                             value : [...set]
                         })
@@ -179,4 +169,4 @@ function ScheduleContain({
     );
 }
 
-export default ScheduleContain;
+export default ScheduleContent;
