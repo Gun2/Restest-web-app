@@ -33,6 +33,7 @@ const initialData = {
     data : [],
     countData : [],
     rpmData : [],
+    rpmSum:{},
 }
 
 //측정 시간 순 정렬
@@ -57,6 +58,7 @@ const dataPreProcessing = (state, item) => {
         data : sortMeasureTime(state.data, item),
         countData :sortMeasureTime(state.countData, countDataPreProcessing(item)),
         rpmData :sortMeasureTime(state.rpmData, rpmDataPreProcessing(item)),
+        rpmSum : rpmSumPreProcessing(state.rpmSum, item),
     }
 }
 
@@ -83,6 +85,20 @@ const rpmDataPreProcessing = ({measureTime, performanceTaskMeasureList}) => {
         measureTime,
         ...performanceTaskMeasureList.reduce((obj, data) => ({...obj, [data.jobId] : data.rpm}), {})
     }
+}
+
+/**
+ * rpm 수치 핪산
+ * @param rpmSum
+ * @param performanceTaskMeasureList
+ * @return {*}
+ */
+const rpmSumPreProcessing = (rpmSum, {performanceTaskMeasureList}) => {
+    return performanceTaskMeasureList.reduce((obj, data) => ({...obj, [data.jobId] : elseGetZero(rpmSum[data.jobId])+ data.rpm}), {});
+}
+
+const elseGetZero = (num) => {
+    return num || 0;
 }
 
 

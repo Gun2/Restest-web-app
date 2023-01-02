@@ -20,7 +20,7 @@ const Box = styled.div`
 `;
 const PerformanceRunningPage = ({uuid}) => {
     const dispatch = useDispatch();
-    const {jobList, data, countData, rpmData, run} = useSelector(store => store.performance);
+    const {jobList, data, countData, rpmData, rpmSum, run} = useSelector(store => store.performance);
     useEffect(() => {
         if(uuid){
             dispatch(addTopicAction({
@@ -59,7 +59,7 @@ const PerformanceRunningPage = ({uuid}) => {
                 chartArea={
                     <>
                         <RequestCountLineChart jobList={jobList} data={countData}/>
-                        <RpmLineChart jobList={jobList} data={rpmData}/>
+                        <RpmLineChart jobList={jobList} data={rpmData} rpmSum={rpmSum}/>
                     </>
                 }
                 controlArea={
