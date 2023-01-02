@@ -1,5 +1,6 @@
 import {hideLoadingAction, showLoadingAction} from "../modules/loading";
 import {removeMessageAction, setMessageAction} from "../modules/validationMessage";
+import {addAlertAction} from "../modules/alertModal";
 
 /**
  *
@@ -20,12 +21,17 @@ export const createRequestThunk =  (api, action) => ({param=null, validationGrou
         }
     }catch (e){
         const data = e.response?.data;
-        if(data && data.code === 'INVALID_INPUT_VALUE' && validationGroup){
-            dispatch(setMessageAction({
-                group : validationGroup,
-                errors : data.errors,
-            }));
+        if(data){
+            if(data.code === 'INVALID_INPUT_VALUE' && validationGroup){
+                dispatch(setMessageAction({
+                    group : validationGroup,
+                    errors : data.errors,
+                }));
+            }else if(data.code === 'NOT_FOUND_BY_ID'){
+                dispatch(addAlertAction(data));
+            }
         }
+
         if(typeof errorCallback == 'function'){
             errorCallback(e);
         }

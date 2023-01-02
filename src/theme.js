@@ -72,7 +72,8 @@ const palette = {
         warning : "#eb9c2d",
     },
     disabled: "#797979",
-    validation: "#d9534f"
+    validation: "#d9534f",
+    shadow: "#000000aa",
 };
 
 const style = {

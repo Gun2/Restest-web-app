@@ -11,6 +11,7 @@ import topic from "./topic";
 import schedulerSuccessLog from "./schedulerSuccessLog";
 import performanceSetting from "./performanceSetting";
 import performance from "./performance";
+import alertModal from "./alertModal";
 
 
 const rootReducer = combineReducers({
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     topic,
     performanceSetting,
     performance,
+    alertModal,
 });
 
 export default rootReducer;

@@ -18,7 +18,7 @@ function ImageTitleCard({image, text, bgColor}) {
                 {image}
             </div>
             <div>
-                <Title text={text} fontSize={"40px"}/>
+                <Title text={text} fontSize={40}/>
             </div>
         </Box>
     );

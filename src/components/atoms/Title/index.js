@@ -6,7 +6,7 @@ const Box = styled.div`
 `
 
 const Text = styled.div`
-    font-size : ${({fontSize}) => fontSize || "20px"};
+    font-size : ${({fontSize}) => fontSize ? `${fontSize}px;` : `20px;`}
     font-weight : bold;
     color : ${({theme, color}) => (color || theme.palette.background)};
 `;

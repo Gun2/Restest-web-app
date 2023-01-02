@@ -8,18 +8,22 @@ import Test from '../../../Test';
 import JobPage from "../JobPage";
 import SchedulePage from "../SchedulePage";
 import LoadingBox from "../../molecules/LoadingBox";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import LogDialog from "../../organisms/LogDialog";
 import PerformancePage from "../PerformancePage";
+import AlertModal from "../../organisms/AlertModal";
+import {removeAlertAction} from "../../../modules/alertModal";
 
 const Box = styled.div`
 `;
 
 function LayoutPage(props) {
+    const dispatch = useDispatch();
     const loadingShow = useSelector(state => state.loading);
     const schedulerFailureLog = useSelector(store => store.schedulerFailureLog.data);
     const schedulerSuccessLog = useSelector(store => store.schedulerSuccessLog.data);
     const [dialogFocusId, setDialogFocusId] = useState('');
+
     const dialogOnClick = (id) => {
         setDialogFocusId(id);
     }
@@ -51,8 +55,16 @@ function LayoutPage(props) {
             return dialogList;
         }
     }, [schedulerFailureLog, schedulerSuccessLog, dialogFocusId])
+    const alertModal = useSelector(store => store.alertModal);
     return (
         <Box>
+            {
+                alertModal.map(modal => <AlertModal
+                    key={modal.key}
+                    id={modal.key}
+                    text={modal.text}
+                    onClickConfirm={(id) => dispatch(removeAlertAction(id))}/>)
+            }
             <LoadingBox show={loadingShow}></LoadingBox>
             {
                 dialogData.map(
