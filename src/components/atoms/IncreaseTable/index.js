@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from "styled-components";
+import ReadOnlyText from "../ReadOnlyText";
 
 const Box = styled.div`
     background-color : ${({theme}) => theme.palette.primary};
@@ -18,7 +19,6 @@ const Td = styled.td`
 `
 
 const Th = styled.th`
-
 `
 
 const TdInput = styled.input`
@@ -27,6 +27,7 @@ const TdInput = styled.input`
 `
 const TdTextArea = styled.textarea`
     width : 95%;
+    height:200px;
     ${({theme, readonly}) => readonly && theme.style.readonly}
 `
 
@@ -47,7 +48,7 @@ function trIncreaseCheck(data, cols) {
  * @param cols col 정보
  * @return {*[]}
  */
-function addNextEmptyTr(data, cols){
+function addNextEmptyTr(data, cols) {
     return [
         ...data,
         cols.reduce((pre, col) => {
@@ -69,7 +70,6 @@ function IncreaseTable({
             onChange(addNextEmptyTr(data, cols));
         }
     }, [cols, data]);
-
 
 
     const onInputChange = useCallback(({target}, index) => {
@@ -114,7 +114,7 @@ function IncreaseTable({
                 {data.map((d, i) => (
                     <Tr key={i}>
                         {cols.map(({type, key}) => (
-                            <Td key={key+i}>
+                            <Td key={key + i}>
                                 {(() => {
                                     switch (type) {
                                         case "input":
@@ -128,12 +128,14 @@ function IncreaseTable({
                                             )
                                         case "textarea" :
                                             return (
-                                                <TdTextArea
-                                                    name={key}
-                                                    value={d[key]}
-                                                    onChange={(e) => onInputChange(e, i)}
-                                                    readonly={readonly}
-                                                />
+                                                readonly ?
+                                                    <ReadOnlyText text={d[key]}/> :
+                                                    <TdTextArea
+                                                        name={key}
+                                                        value={d[key]}
+                                                        onChange={(e) => onInputChange(e, i)}
+                                                        readonly={readonly}
+                                                    />
                                             )
                                         case "checkbox" :
                                             return (
