@@ -198,7 +198,7 @@ const ScrollBody = ({children}) => {
     }, [ref]);
 
     const handleScroll = useCallback(({target}) => {
-        if(target.scrollHeight <= target.clientHeight + target.scrollTop){
+        if(target.scrollHeight <= target.clientHeight + target.scrollTop + 5){
             setScrollBottom(true);
         }else{
             setScrollBottom(false);
