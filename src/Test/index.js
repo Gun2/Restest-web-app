@@ -1,16 +1,6 @@
 import React, {useContext} from 'react';
 import Button from '../components/atoms/Button';
-import InputText from '../components/atoms/InputText';
-import Select from '../components/atoms/Select';
 import {SocketContext} from "../App";
-import JobRow from "../components/molecules/JobRow";
-import JobContent from "../components/molecules/JobContent";
-import TabBar from "../components/molecules/TabBar";
-import Tab from "../components/atoms/Tab";
-import IncreaseTable from "../components/atoms/IncreaseTable";
-import axios from "axios";
-import JobList from "../components/organisms/JobList";
-import ScheduleContent from "../components/molecules/ScheduleContent";
 import SchedulePage from "../components/pages/SchedulePage";
 
 function Test(props) {

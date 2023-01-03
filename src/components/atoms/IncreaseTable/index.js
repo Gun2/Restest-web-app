@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import styled from "styled-components";
 import ReadOnlyText from "../ReadOnlyText";
 
@@ -36,7 +36,7 @@ const TdCheckBox = styled.input`
 `
 
 function trIncreaseCheck(data, cols) {
-    if (data.length == 0) return true;
+    if (data.length === 0) return true;
     var lastData = data[data.length - 1];
     var trIncrease = cols.some(({key, increaseIgnore}) => !increaseIgnore && lastData[key]);
     return trIncrease;
@@ -69,14 +69,14 @@ function IncreaseTable({
         if (trIncreaseCheck(data, cols)) {
             onChange(addNextEmptyTr(data, cols));
         }
-    }, [cols, data]);
+    }, [cols, data, onChange]);
 
 
     const onInputChange = useCallback(({target}, index) => {
         var {name, value} = target;
         var keys = cols.map(({key}) => key);
         var emptyRemovedData = data.map((d, i) =>
-            i == index ? {
+            i === index ? {
                 ...d,
                 [name]: value
             } : d
@@ -85,13 +85,13 @@ function IncreaseTable({
             emptyRemovedData = addNextEmptyTr(emptyRemovedData, cols)
         }
         onChange(emptyRemovedData);
-    }, [cols, data]);
+    }, [cols, data, onChange]);
 
     const onCheckChange = useCallback(({target}, index) => {
         var {name, checked} = target;
         var keys = cols.map(({key}) => key);
         var emptyRemovedData = data.map((d, i) =>
-            i == index ? {
+            i === index ? {
                 ...d,
                 [name]: checked
             } : d
@@ -100,7 +100,7 @@ function IncreaseTable({
             emptyRemovedData = addNextEmptyTr(emptyRemovedData, cols)
         }
         onChange(emptyRemovedData);
-    }, [cols, data]);
+    }, [cols, data, onChange]);
 
     return (
         <Box>

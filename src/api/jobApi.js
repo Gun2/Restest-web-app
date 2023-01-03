@@ -5,9 +5,11 @@ const update = (job) => axios.put('/api/v1/jobs', job);
 const create = (job) => axios.post('/api/v1/jobs', job);
 const deleteById = (id) => axios.delete(`/api/v1/jobs/${id}`);
 
-export default {
+const jobApi = {
     readAll,
     update,
     create,
     deleteById
 }
+
+export default jobApi;

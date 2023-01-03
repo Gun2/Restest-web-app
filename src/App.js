@@ -4,12 +4,8 @@ import theme from './theme';
 import LayoutPage from './components/pages/LayoutPage';
 import {BrowserRouter} from 'react-router-dom';
 import SockJsClient from "react-stomp";
-import React, {useCallback, useMemo, useRef} from "react";
+import React, {useMemo, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {failureUpdate, successUpdate, userUpdate} from "./modules/sysInfo";
-import {schedulerUpdate, schedulerInsert, schedulerInit, schedulerDelete} from "./modules/scheduler";
-import {jobChangeDataSpreaderThunk} from "./modules/job";
-import {scheduleChangeDataSpreaderThunk} from "./modules/schedule";
 
 const Box = styled.div`
   background-color : ${({theme}) => theme.palette.background};
@@ -27,7 +23,7 @@ function App() {
         <BrowserRouter>
             <SockJsClient
                 ref={socketRef}
-                url='http://localhost:8081/ws'
+                url={`${process.env.REACT_APP_API_URL}/ws`}
 
                 //getRetryInterval={1}
                 topics={Object.keys(topicAction)}
