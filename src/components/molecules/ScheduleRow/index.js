@@ -44,7 +44,7 @@ function ScheduleRow({
                     {
                         schedulerStateInfo &&
                         <>
-                            <Title fontSize={10} color={theme.palette.text.default}>{schedulerStateInfo.lastTime}ms</Title>
+                            <Title fontSize={12} color={theme.palette.text.default}>{schedulerStateInfo.lastTime}ms</Title>
                             <StatusLabel
                                 status={"success"}
                                 label={schedulerStateInfo.success}

@@ -31,7 +31,7 @@ const LogDialog = ({id, data, title, startPoint, onClick}) => {
                             }
                             tail={
                                 <>
-                                    <Title text={`${d.time}ms`} color={({theme})=>theme.palette.text.default} fontSize={10}/>
+                                    <Title text={`${d.time}ms`} color={({theme})=>theme.palette.text.default} fontSize={16}/>
                                 </>
                             }
                             content={
@@ -64,7 +64,7 @@ const LogDialog = ({id, data, title, startPoint, onClick}) => {
                             }
                         />
                         <TimeBox>
-                            <Title fontSize={8} text={toSystemDateFormat(d.recordTime)} color={({theme}) => theme.palette.text.default}/>
+                            <Title fontSize={10} text={toSystemDateFormat(d.recordTime)} color={({theme}) => theme.palette.text.default}/>
                         </TimeBox>
                     </RowBox>)
                 }
