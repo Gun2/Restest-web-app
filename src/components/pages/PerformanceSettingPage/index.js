@@ -37,7 +37,7 @@ const PerformanceSettingPage = ({}) => {
         dispatch(readMaxInstanceThunk({}));
     }, []);
     useEffect(() => {
-        setInstanceValue(Math.floor(maxInstance / 2));
+        setInstanceValue(maxInstance > 1 ? 1 : 0);
     }, [maxInstance]);
     useEffect(() => {
         //체크된 항목이 존재하는지 확인
