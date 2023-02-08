@@ -6,6 +6,7 @@ const Box = styled.pre`
     margin:0;
     overflow-y:auto;
     max-height:300px;
+    text-align:left;
 `;
 const ReadOnlyText = ({text}) => {
     return (
