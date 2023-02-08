@@ -1,20 +1,14 @@
-import React, {useCallback, useRef, useState} from 'react';
-import styled, {css} from "styled-components";
-import CheckBox from "../../atoms/CheckBox";
+import React from 'react';
 import Title from "../../atoms/Title";
-import DirectionToggle from "../../atoms/DirectionToggle";
-import JobContent from "../JobContent";
 import ScheduleContent from "../ScheduleContent";
-import {Switch} from "@mui/material";
+import Switch from "../../atoms/Switch"
 import axios from "axios";
-import {MdCheckCircleOutline} from "react-icons/md";
 import StatusLabel from "../../atoms/StatusLabel";
 import theme from "../../../theme";
 import OpenRow from "../OpenRow";
-import {failureLogAddAction, failureLogDialogThunk, failureLogReadAllThunk} from "../../../modules/schedulerFailureLog";
+import {failureLogDialogThunk} from "../../../modules/schedulerFailureLog";
 import {useDispatch} from "react-redux";
-import {addTopicAction} from "../../../modules/topic";
-import {successLogAddAction, successLogDialogThunk, successLogReadAllThunk} from "../../../modules/schedulerSuccessLog";
+import {successLogDialogThunk} from "../../../modules/schedulerSuccessLog";
 
 const initData = {
     title: "",
@@ -65,18 +59,16 @@ function ScheduleRow({
                     }
                     <Switch
                         checked={schedulerStateInfo != null}
-                        color={"secondary"}
-                        onChange={({target}) => {
+                        onChange={({checked}) => {
                             axios.put('/api/v1/schedules/run', {
                                 id: _key,
-                                run: target.checked
+                                run: checked
                             }).then(r => {
                                 onSaveCallback();
                             }).catch(e => {
                                 console.error(e)
                             })
                         }}
-
                     />
                 </>
 
